@@ -5,13 +5,13 @@ import { getAnime } from "../requests/getAnime";
 
 export const Summon: Command = {
   name: "summon",
-  description: "Summons an anime character",
+  description: "Summons an anime show",
   type: "CHAT_INPUT",
   run: async (client: Client, interaction: BaseCommandInteraction) => {
     const content = await getAnime();
 
     await interaction.followUp({
-      ephemeral: true,
+      ephemeral: false,
       content,
     });
   },
