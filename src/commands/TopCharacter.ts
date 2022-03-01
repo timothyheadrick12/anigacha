@@ -1,17 +1,18 @@
 import {BaseCommandInteraction, Client, Message, MessageEmbed} from 'discord.js'
 import {Command} from '../Command'
-import getCharacter from '../requests/getCharacter'
+import getTopCharacter from '../requests/getTopCharacter'
 
-export const Summon: Command = {
-  name: 'summon',
-  description: 'Summons an anime character',
+export const TopCharacter: Command = {
+  name: 'topcharacter',
+  description: 'Summons the top anime character',
   type: 'CHAT_INPUT',
   run: async (client: Client, interaction: BaseCommandInteraction) => {
-    const character = await getCharacter()
+    const character = await getTopCharacter()
     const characterEmbed = new MessageEmbed()
       .setTitle(character.name.full)
       .setImage(character.image.medium)
       .setDescription(character.description)
+      .addField('Favorites:', character.favourites.toString(), true)
 
     await interaction.followUp({
       ephemeral: false,
