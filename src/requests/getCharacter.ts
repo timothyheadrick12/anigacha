@@ -1,5 +1,6 @@
-import axios from 'axios'
-import {randomInt} from 'crypto'
+import axios from 'axios';
+import {randomInt} from 'crypto';
+import {calculateRarity} from '../globals';
 
 export default async () =>
   axios({
@@ -11,31 +12,44 @@ export default async () =>
     },
     data: {
       query: `
-      query ($popularity_greater: Int) { # Define which variables will be used in the query (id)
-        Media (popularity_greater: $popularity_greater, type: ANIME) { # Insert our variables into the query arguments (id) (type: ANIME is hard-coded in the query)
-          characters {
-            edges {
-              node {
-                name {
-                  full
-                }
-                image {
-                  medium
-                }
-                description
-              }
+      query ($popularity_rank: Int) { # Define which variables will be used in the query (id)
+        Page(page: $popularity_rank, perPage:1){
+          media (sort:POPULARITY_DESC, type: ANIME) { # Insert our variables into the query arguments (id) (type: ANIME is hard-coded in the query)
+            title {
+              romaji
+              english
             }
+            characters(sort:FAVOURITES_DESC) {
+                edges {
+                  node {
+                    id
+                    favourites
+                    name {
+                      full
+                    }
+                    image {
+                      medium
+                    }
+                    description
+                  }
+                }
+              }
           }
         }
       }
       `,
-      variables: {popularity_greater: randomInt(31900, 544000)},
+      variables: {popularity_rank: randomInt(1, 1001)},
     },
-  }).then(
-    (result) =>
-      result.data.data.Media.characters.edges[
+  }).then((result) => {
+    const character =
+      result.data.data.Page.media[0].characters.edges[
         Math.floor(
-          Math.random() * result.data.data.Media.characters.edges.length
+          Math.random() * result.data.data.Page.media[0].characters.edges.length
         )
-      ].node
-  )
+      ].node;
+    character.anime = result.data.data.Page.media[0].title.english
+      ? result.data.data.Page.media[0].title.english
+      : result.data.data.Page.media[0].title.romaji;
+    character.rarity = calculateRarity(character.favourites);
+    return character;
+  });

@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from 'axios';
 
 export default async (rank: number) =>
   axios({
@@ -21,5 +21,5 @@ export default async (rank: number) =>
       variables: {popularity_rank: rank},
     },
   }).then((result) => {
-    return result.data.data.Page.characters[0].favourites
-  })
+    return result.data.data.Page.characters[0].favourites;
+  });

@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from 'axios';
 
 export default async () =>
   axios({
@@ -24,4 +24,4 @@ export default async () =>
       }
       `,
     },
-  }).then((result) => result.data.data.Character)
+  }).then((result) => result.data.data.Character);
