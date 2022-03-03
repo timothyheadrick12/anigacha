@@ -1,9 +1,20 @@
-import { Collection } from "discord.js";
-import getPopularityOfRank from "./requests/getPopularityOfRank";
+import {Collection} from 'discord.js';
+import getPopularityOfRank from './requests/getPopularityOfRank';
+import Character from './models/Characters';
+import Player from './models/Players';
 
-export const MAX_STAT = 1000000000000000;
+export const players = new Collection<string, Character | null>();
 
-export const players = new Collection();
+export const getPlayers = async () => {
+  Player.findAll({
+    attributes: ['id'],
+  }).then((fPlayers) =>
+    fPlayers.forEach(async (player) => {
+      const primaryCharacter = await player.getPrimaryCharacter();
+      players.set(player.id, primaryCharacter);
+    })
+  );
+};
 
 export var popularityCut = {
   top: 0,
@@ -11,11 +22,6 @@ export var popularityCut = {
   top1000: 0,
   top2500: 0,
   top10000: 0,
-};
-
-export const calculateStat = (popularity: number): number => {
-  if (popularity >= popularityCut.top) return MAX_STAT;
-  return Math.pow(MAX_STAT / 100, popularity / popularityCut.top) * 100;
 };
 
 export const updatePopularity = async () => {
@@ -27,9 +33,9 @@ export const updatePopularity = async () => {
 };
 
 export const calculateRarity = (favourites: number) => {
-  if (favourites >= popularityCut.top100) return "★★★★★";
-  else if (favourites >= popularityCut.top1000) return "★★★★";
-  else if (favourites >= popularityCut.top2500) return "★★★";
-  else if (favourites >= popularityCut.top10000) return "★★";
-  else return "★";
+  if (favourites >= popularityCut.top100) return '★★★★★';
+  else if (favourites >= popularityCut.top1000) return '★★★★';
+  else if (favourites >= popularityCut.top2500) return '★★★';
+  else if (favourites >= popularityCut.top10000) return '★★';
+  else return '★';
 };

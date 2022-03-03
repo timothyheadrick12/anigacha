@@ -15,17 +15,17 @@ import {
   HasManyHasAssociationMixin,
   HasManyHasAssociationsMixin,
   InferCreationAttributes,
-} from "sequelize";
-import Character from "./Characters";
+  HasOneCreateAssociationMixin,
+  HasOneSetAssociationMixin,
+  HasOneGetAssociationMixin,
+} from 'sequelize';
+import Character from './Characters';
 export default class Player extends Model<
   InferAttributes<Player>,
   InferCreationAttributes<Player>
 > {
-  declare id: number;
+  declare id: string;
   declare name: string;
-  declare anime: string;
-  declare popularity: number;
-  declare rarity: string;
 
   declare getCharacters: HasManyGetAssociationsMixin<Character>;
   declare addCharacter: HasManyAddAssociationMixin<Character, number>;
@@ -36,7 +36,11 @@ export default class Player extends Model<
   declare hasCharacter: HasManyHasAssociationMixin<Character, number>;
   declare hasCharacters: HasManyHasAssociationsMixin<Character, number>;
   declare countCharacter: HasManyCountAssociationsMixin;
-  declare createCharacter: HasManyCreateAssociationMixin<Character, "owner_id">;
+  declare createCharacter: HasManyCreateAssociationMixin<Character, 'owner_id'>;
+
+  declare getPrimaryCharacter: HasOneGetAssociationMixin<Character>;
+  declare setPrimaryCharacter: HasOneSetAssociationMixin<Character, 'id'>;
+  declare createPrimaryCharacter: HasOneCreateAssociationMixin<Character>;
 
   declare static associations: {
     characters: Association<Player, Character>;
@@ -44,32 +48,21 @@ export default class Player extends Model<
 }
 
 export const playersInit = (sequelize: Sequelize) => {
-  Character.init(
+  Player.init(
     {
       id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
+        allowNull: false,
         primaryKey: true,
       },
       name: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      anime: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      popularity: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
-      rarity: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
     },
     {
       sequelize,
-      tableName: "characters",
+      tableName: 'players',
     }
   );
 };

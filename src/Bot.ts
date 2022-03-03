@@ -2,7 +2,7 @@ import {Client} from 'discord.js';
 import * as dotenv from 'dotenv';
 import interactionCreate from './listeners/interactionCreate';
 import ready from './listeners/ready';
-import {updatePopularity} from './globals';
+import {getPlayers, updatePopularity} from './globals';
 import './dbObjects';
 
 dotenv.config();
@@ -18,5 +18,6 @@ const client = new Client({
 ready(client);
 interactionCreate(client);
 updatePopularity().then(() => console.log('Got popularities'));
+getPlayers().then(() => console.log('Got players'));
 
 client.login(token);
