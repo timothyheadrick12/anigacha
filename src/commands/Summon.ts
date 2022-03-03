@@ -20,7 +20,7 @@ export const Summon: Command = {
       .addField("Rarity", character.rarity);
 
     Character.create({
-      id: character.id,
+      character_id: character.id,
       name: character.name.full,
       anime: character.anime,
       popularity: character.favourites,

@@ -1,6 +1,9 @@
-import getPopularityOfRank from './requests/getPopularityOfRank';
+import { Collection } from "discord.js";
+import getPopularityOfRank from "./requests/getPopularityOfRank";
 
 export const MAX_STAT = 1000000000000000;
+
+export const players = new Collection();
 
 export var popularityCut = {
   top: 0,
@@ -24,9 +27,9 @@ export const updatePopularity = async () => {
 };
 
 export const calculateRarity = (favourites: number) => {
-  if (favourites >= popularityCut.top100) return '★★★★★';
-  else if (favourites >= popularityCut.top1000) return '★★★★';
-  else if (favourites >= popularityCut.top2500) return '★★★';
-  else if (favourites >= popularityCut.top10000) return '★★';
-  else return '★';
+  if (favourites >= popularityCut.top100) return "★★★★★";
+  else if (favourites >= popularityCut.top1000) return "★★★★";
+  else if (favourites >= popularityCut.top2500) return "★★★";
+  else if (favourites >= popularityCut.top10000) return "★★";
+  else return "★";
 };
