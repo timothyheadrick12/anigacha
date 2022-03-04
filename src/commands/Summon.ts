@@ -1,51 +1,41 @@
-import {BaseCommandInteraction, Client, MessageEmbed} from 'discord.js';
-import {Command} from '../Command';
-import getCharacter from '../requests/getCharacter';
-import Character from '../models/Characters';
-import {players} from '../globals';
-import Player from '../models/Players';
-import {createCharacter} from '../game_logic/characterLogic';
+import {
+  BaseCommandInteraction,
+  Client,
+  MessageActionRow,
+  MessageButton,
+} from "discord.js";
+import { Command } from "../Command";
+import { players } from "../globals";
+import Player from "../models/Players";
 
 export const Summon: Command = {
-  name: 'summon',
-  description: 'Summons an anime character',
-  type: 'CHAT_INPUT',
+  name: "summon",
+  description: "Summons an anime character",
+  type: "CHAT_INPUT",
+  ephemeral: true,
   run: async (client: Client, interaction: BaseCommandInteraction) => {
-    const characterData = await getCharacter();
-    const characterEmbed = new MessageEmbed()
-      .setTitle(characterData.name.full + ' from ' + characterData.anime)
-      .setImage(characterData.image.medium)
-      .setDescription(
-        characterData.description && characterData.description.length < 4096
-          ? characterData.description
-          : ''
-      )
-      .addField('Rarity', characterData.rarity);
-
-    await interaction.followUp({
-      ephemeral: false,
-      embeds: [characterEmbed],
-    });
-
+    const buttonRow = new MessageActionRow().addComponents(
+      new MessageButton()
+        .setCustomId("onePull")
+        .setLabel("1x Summon")
+        .setStyle("PRIMARY"),
+      new MessageButton()
+        .setCustomId("tenPull")
+        .setLabel("10x Summon")
+        .setStyle("PRIMARY")
+        .setDisabled()
+    );
     if (!players.has(interaction.user.id)) {
-      Player.create({
+      await Player.create({
         id: interaction.user.id,
         name: interaction.user.username,
-      }).then((player) => {
-        players.set(player.id, null);
-        createCharacter(player, characterData).then((character) => {
-          if (character) {
-            players.set(player.id, character);
-            player.setPrimaryCharacter(character);
-          }
-        });
-      });
-    } else {
-      Player.findByPk(interaction.user.id).then((player) => {
-        if (player) {
-          createCharacter(player, characterData);
-        }
-      });
+      }).then((player) => players.set(player.id, player));
     }
+    await interaction.followUp({
+      content:
+        "**Select a button to summon**\nCurrency: " +
+        players.get(interaction.user.id)?.currency,
+      components: [buttonRow],
+    });
   },
 };

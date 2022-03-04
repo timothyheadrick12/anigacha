@@ -1,54 +1,42 @@
-import Player from '../models/Players';
-import {popularityCut} from '../globals';
-import {randomInt} from 'crypto';
-import Character from '../models/Characters';
+import Player from "../models/Players";
+import { popularityCut } from "../globals";
+import { randomInt } from "crypto";
+import Character from "../models/Characters";
 
 export const MAX_STAT = 1000000000000000;
 
 export const createCharacter = async (
-  player: string | Player,
+  player: Player,
   characterData: any
 ): Promise<Character | null> => {
-  if (!(player instanceof Player)) {
-    await Player.findByPk(player).then((foundPlayer) => {
-      if (foundPlayer) {
-        player = foundPlayer;
-      }
-    });
-  }
   const stats = calculateStat(characterData.favourites);
-  if (player instanceof Player) {
-    return player.createCharacter({
-      character_id: characterData.id,
-      name: characterData.name.full,
-      anime: characterData.anime,
-      popularity: characterData.favourites,
-      rarity: characterData.rarity,
-      stat_coef: stats.stat_coef,
-      power: stats.power,
-      hpCap: stats.hpCap,
-      defenseCap: stats.defenseCap,
-      attackCap: stats.attackCap,
-      avoCap: stats.avoCap,
-      hitCap: stats.hitCap,
-      critCap: stats.critCap,
-      luckCap: stats.luckCap,
-      charismaCap: stats.charismaCap,
-      growthRate: stats.growthRate,
-      maxHP: stats.maxHP,
-      curHP: stats.curHP,
-      attack: stats.attack,
-      defense: stats.defense,
-      hit: stats.hit,
-      charisma: stats.charisma,
-      avo: stats.avo,
-      luck: stats.luck,
-      crit: stats.crit,
-    });
-  } else {
-    console.log('Something went wrong when trying to create a character');
-    return null;
-  }
+  return player.createCharacter({
+    character_id: characterData.id,
+    name: characterData.name.full,
+    anime: characterData.anime,
+    popularity: characterData.favourites,
+    rarity: characterData.rarity,
+    stat_coef: stats.stat_coef,
+    power: stats.power,
+    hpCap: stats.hpCap,
+    defenseCap: stats.defenseCap,
+    attackCap: stats.attackCap,
+    avoCap: stats.avoCap,
+    hitCap: stats.hitCap,
+    critCap: stats.critCap,
+    luckCap: stats.luckCap,
+    charismaCap: stats.charismaCap,
+    growthRate: stats.growthRate,
+    maxHP: stats.maxHP,
+    curHP: stats.curHP,
+    attack: stats.attack,
+    defense: stats.defense,
+    hit: stats.hit,
+    charisma: stats.charisma,
+    avo: stats.avo,
+    luck: stats.luck,
+    crit: stats.crit,
+  });
 };
 
 export const calculateStat = (popularity: number): any => {

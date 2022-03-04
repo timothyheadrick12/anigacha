@@ -18,14 +18,21 @@ import {
   HasOneCreateAssociationMixin,
   HasOneSetAssociationMixin,
   HasOneGetAssociationMixin,
-} from 'sequelize';
-import Character from './Characters';
+  CreationOptional,
+  NonAttribute,
+} from "sequelize";
+import Character from "./Characters";
 export default class Player extends Model<
   InferAttributes<Player>,
   InferCreationAttributes<Player>
 > {
   declare id: string;
   declare name: string;
+  declare currency: CreationOptional<number>;
+  declare fiveStarPity: CreationOptional<number>;
+  declare fourStarPity: CreationOptional<number>;
+  declare threeStarPity: CreationOptional<number>;
+  declare primaryCharacter?: NonAttribute<Character>;
 
   declare getCharacters: HasManyGetAssociationsMixin<Character>;
   declare addCharacter: HasManyAddAssociationMixin<Character, number>;
@@ -36,10 +43,10 @@ export default class Player extends Model<
   declare hasCharacter: HasManyHasAssociationMixin<Character, number>;
   declare hasCharacters: HasManyHasAssociationsMixin<Character, number>;
   declare countCharacter: HasManyCountAssociationsMixin;
-  declare createCharacter: HasManyCreateAssociationMixin<Character, 'owner_id'>;
+  declare createCharacter: HasManyCreateAssociationMixin<Character, "owner_id">;
 
   declare getPrimaryCharacter: HasOneGetAssociationMixin<Character>;
-  declare setPrimaryCharacter: HasOneSetAssociationMixin<Character, 'id'>;
+  declare setPrimaryCharacter: HasOneSetAssociationMixin<Character, "id">;
   declare createPrimaryCharacter: HasOneCreateAssociationMixin<Character>;
 
   declare static associations: {
@@ -59,10 +66,30 @@ export const playersInit = (sequelize: Sequelize) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      currency: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1000,
+      },
+      fiveStarPity: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+      },
+      fourStarPity: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+      },
+      threeStarPity: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+      },
     },
     {
       sequelize,
-      tableName: 'players',
+      tableName: "players",
     }
   );
 };
