@@ -1,14 +1,15 @@
-import axios from 'axios';
-import {randomInt} from 'crypto';
-import {calculateRarity} from '../globals';
+import axios from "axios";
+import { randomInt } from "crypto";
+import { calculateRarity } from "../globals";
+import { CharacterData } from "../typings/CharacterData";
 
 export default async () =>
   axios({
-    url: 'https://graphql.anilist.co',
-    method: 'post',
+    url: "https://graphql.anilist.co",
+    method: "post",
     headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
+      "Content-Type": "application/json",
+      Accept: "application/json",
     },
     data: {
       query: `
@@ -38,18 +39,23 @@ export default async () =>
         }
       }
       `,
-      variables: {popularity_rank: randomInt(1, 1001)},
+      variables: { popularity_rank: randomInt(1, 1001) },
     },
   }).then((result) => {
-    const character =
+    const characterNode =
       result.data.data.Page.media[0].characters.edges[
         Math.floor(
           Math.random() * result.data.data.Page.media[0].characters.edges.length
         )
       ].node;
-    character.anime = result.data.data.Page.media[0].title.english
-      ? result.data.data.Page.media[0].title.english
-      : result.data.data.Page.media[0].title.romaji;
-    character.rarity = calculateRarity(character.favourites);
+    const character: CharacterData = {
+      name: characterNode.name.full as string,
+      anime: (result.data.data.Page.media[0].title.english
+        ? result.data.data.Page.media[0].title.english
+        : result.data.data.Page.media[0].title.romaji) as string,
+      description: characterNode.description as string,
+      rarity: calculateRarity(characterNode.favourites),
+      image: characterNode.image.medium as string,
+    };
     return character;
   });
