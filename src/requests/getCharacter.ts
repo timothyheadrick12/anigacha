@@ -1,7 +1,7 @@
 import axios from "axios";
 import { randomInt } from "crypto";
 import { calculateRarity } from "../globals";
-import { CharacterData } from "../typings/CharacterData";
+import { ReqCharacterData } from "../typings/CharacterData";
 
 export default async () =>
   axios({
@@ -48,7 +48,7 @@ export default async () =>
           Math.random() * result.data.data.Page.media[0].characters.edges.length
         )
       ].node;
-    const character: CharacterData = {
+    const character: ReqCharacterData = {
       id: characterNode.id as number,
       name: characterNode.name.full as string,
       anime: (result.data.data.Page.media[0].title.english

@@ -1,4 +1,4 @@
-export interface CharacterData {
+export interface ReqCharacterData {
   id: number;
   name: string;
   anime: string;
