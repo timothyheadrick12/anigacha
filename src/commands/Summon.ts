@@ -33,7 +33,7 @@ export const Summon: Command = {
     }
     await interaction.followUp({
       content:
-        "**Select a button to summon**\nCurrency: " +
+        "**Select a button to summon**\nHusks: " +
         players.get(interaction.user.id)?.currency,
       components: [buttonRow],
     });
