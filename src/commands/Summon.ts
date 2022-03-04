@@ -4,7 +4,7 @@ import {
   MessageActionRow,
   MessageButton,
 } from "discord.js";
-import { Command } from "../Command";
+import { Command } from "../typings/Command";
 import { players } from "../globals";
 import Player from "../models/Players";
 

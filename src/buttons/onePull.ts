@@ -1,6 +1,6 @@
 import { ButtonInteraction, Client, MessageEmbed } from "discord.js";
 import getCharacter from "../requests/getCharacter";
-import { Button } from "../Button";
+import { Button } from "../typings/Button";
 import { players } from "../globals";
 import Player from "../models/Players";
 import { createCharacter } from "../game_logic/characterLogic";
