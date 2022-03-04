@@ -49,11 +49,13 @@ export default async () =>
         )
       ].node;
     const character: CharacterData = {
+      id: characterNode.id as number,
       name: characterNode.name.full as string,
       anime: (result.data.data.Page.media[0].title.english
         ? result.data.data.Page.media[0].title.english
         : result.data.data.Page.media[0].title.romaji) as string,
       description: characterNode.description as string,
+      favourites: characterNode.favourites as number,
       rarity: calculateRarity(characterNode.favourites),
       image: characterNode.image.medium as string,
     };

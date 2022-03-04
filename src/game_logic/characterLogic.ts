@@ -2,17 +2,18 @@ import Player from "../models/Players";
 import { popularityCut } from "../globals";
 import { randomInt } from "crypto";
 import Character from "../models/Characters";
+import { CharacterData } from "../typings/CharacterData";
 
 export const MAX_STAT = 1000000000000000;
 
 export const createCharacter = async (
   player: Player,
-  characterData: any
+  characterData: CharacterData
 ): Promise<Character | null> => {
   const stats = calculateStat(characterData.favourites);
   return player.createCharacter({
     character_id: characterData.id,
-    name: characterData.name.full,
+    name: characterData.name,
     anime: characterData.anime,
     popularity: characterData.favourites,
     rarity: characterData.rarity,
