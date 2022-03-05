@@ -26,7 +26,7 @@ export const Inventory: Command = {
     } else {
       const player = players.get(interaction.user.id)!;
       const characters = await player.getCharacters({
-        attributes: ["name", "rarity"],
+        attributes: ["name", "rarity", "id"],
         order: [["power", "DESC"]],
       });
       if (!characters) {
@@ -34,22 +34,35 @@ export const Inventory: Command = {
           content: "You have no characters. Try using /summon first",
         });
       } else {
-        var message = player.primaryCharacter
-          ? "Primary: **" +
-            player.primaryCharacter.name +
-            player.primaryCharacter.name +
-            "** \n\n"
-          : "";
+        var messages = [
+          player.primaryCharacter
+            ? "Primary: **" +
+              player.primaryCharacter.name +
+              player.primaryCharacter.rarity +
+              "** \n\n"
+            : "",
+        ];
+        var index = 0;
         characters?.forEach((character) => {
-          if (message.length < 1900)
-            message += character.name + character.rarity + "     ";
-          else
-            message +=
-              "I can't fit all your characters! Yell at Tim to fix this!";
+          if (messages[index].length < 1900)
+            messages[index] +=
+              "[" +
+              character.id.toString() +
+              "]" +
+              character.name +
+              character.rarity +
+              "     ";
+          else {
+            messages.push("");
+            index++;
+          }
         });
-        await interaction.followUp({
-          content: message,
-        });
+        for (var i = 0; i < messages.length; i++) {
+          await interaction.followUp({
+            ephemeral: true,
+            content: messages[i],
+          });
+        }
       }
     }
   },

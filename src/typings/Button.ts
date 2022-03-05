@@ -1,4 +1,4 @@
-import { BaseCommandInteraction, ButtonInteraction, Client } from "discord.js";
+import { ButtonInteraction, Client } from "discord.js";
 
 export interface Button {
   customId: string;

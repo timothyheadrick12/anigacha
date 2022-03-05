@@ -4,6 +4,7 @@ import interactionCreate from "./listeners/interactionCreate";
 import ready from "./listeners/ready";
 import { getPlayers, updatePopularity } from "./globals";
 import "./dbObjects";
+import { fillBuffer } from "./game_logic/summonLogic";
 
 dotenv.config();
 
@@ -19,5 +20,6 @@ ready(client);
 interactionCreate(client);
 updatePopularity().then(() => console.log("Got popularities"));
 getPlayers().then(() => console.log("Got players"));
+fillBuffer(75).then(() => console.log("Filled Buffer"));
 
 client.login(token);

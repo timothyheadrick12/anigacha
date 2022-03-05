@@ -23,7 +23,6 @@ export const Summon: Command = {
         .setCustomId("tenPull")
         .setLabel("10x Summon")
         .setStyle("PRIMARY")
-        .setDisabled()
     );
     if (!players.has(interaction.user.id)) {
       await Player.create({

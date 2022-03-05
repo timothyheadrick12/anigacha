@@ -13,6 +13,9 @@ export const players = new Collection<string, Player>();
 export const getPlayers = async () => {
   Player.findAll().then((fPlayers) =>
     fPlayers.forEach((player) => {
+      player
+        .getPrimaryCharacter()
+        .then((character) => (player.primaryCharacter = character));
       players.set(player.id, player);
     })
   );

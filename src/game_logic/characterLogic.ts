@@ -2,13 +2,13 @@ import Player from "../models/Players";
 import { popularityCut } from "../globals";
 import { randomInt } from "crypto";
 import Character from "../models/Characters";
-import { CharacterData } from "../typings/CharacterData";
+import { ReqCharacterData } from "../typings/CharacterData";
 
 export const MAX_STAT = 1000000000000000;
 
 export const createCharacter = async (
   player: Player,
-  characterData: CharacterData
+  characterData: ReqCharacterData
 ): Promise<Character | null> => {
   const stats = calculateStat(characterData.favourites);
   return player.createCharacter({
@@ -70,7 +70,7 @@ export const calculateStat = (popularity: number): any => {
       Math.pow(MAX_STAT / 100, popularity / popularityCut.top) * 100
     );
   }
-  stats.hpCap = randomInt(1, stats.stat_coef);
+  stats.hpCap = randomInt(1, stats.stat_coef) + 1;
   stats.attackCap = randomInt(1, stats.stat_coef);
   stats.defenseCap = randomInt(1, stats.stat_coef);
   stats.avoCap = randomInt(1, stats.stat_coef);
@@ -79,7 +79,7 @@ export const calculateStat = (popularity: number): any => {
   stats.luckCap = randomInt(1, stats.stat_coef);
   stats.charismaCap = randomInt(1, stats.stat_coef);
   stats.growthRate = randomInt(1, stats.stat_coef);
-  stats.maxHP = Math.floor((Math.random() * 0.1 + 0.01) * stats.hpCap);
+  stats.maxHP = Math.floor((Math.random() * 0.1 + 0.01) * stats.hpCap) + 1;
   stats.attack = Math.floor((Math.random() * 0.1 + 0.01) * stats.attackCap);
   stats.luck = Math.floor((Math.random() * 0.1 + 0.01) * stats.luckCap);
   stats.avo = Math.floor((Math.random() * 0.1 + 0.01) * stats.avoCap);

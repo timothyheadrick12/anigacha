@@ -3,9 +3,11 @@ import {
   ButtonInteraction,
   Client,
   Interaction,
+  SelectMenuInteraction,
 } from "discord.js";
 import { Commands } from "../Commands";
 import { Buttons } from "../Buttons";
+import { SelectMenus } from "../SelectMenus";
 
 export default (client: Client): void => {
   client.on("interactionCreate", async (interaction: Interaction) => {
@@ -13,6 +15,8 @@ export default (client: Client): void => {
       await handleSlashCommand(client, interaction);
     } else if (interaction.isButton()) {
       await handleButton(client, interaction);
+    } else if (interaction.isSelectMenu()) {
+      await handleSelectMenu(client, interaction);
     }
   });
 };
@@ -51,4 +55,21 @@ const handleButton = async (
   await interaction.deferReply();
 
   button.run(client, interaction);
+};
+
+const handleSelectMenu = async (
+  client: Client,
+  interaction: SelectMenuInteraction
+): Promise<void> => {
+  const selectMenu = SelectMenus.find(
+    (b) => b.customId === interaction.customId
+  );
+  if (!selectMenu) {
+    interaction.followUp({ content: "An error has occured" });
+    return;
+  }
+
+  await interaction.deferUpdate();
+
+  selectMenu.run(client, interaction);
 };
