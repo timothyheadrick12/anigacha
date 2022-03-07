@@ -69,5 +69,15 @@ export const fillBuffer = async (amount: number) => {
       console.log(error);
       i--;
     }
+    sleep(200)
+   
   }
 };
+
+function sleep(milliseconds: number) {
+  const date = Date.now();
+  let currentDate = null;
+  do {
+    currentDate = Date.now();
+  } while (currentDate - date < milliseconds);
+}
