@@ -16,12 +16,6 @@ export const tenPull: Button = {
             new MessageEmbed()
               .setTitle(characterData.name + " from " + characterData.anime)
               .setImage(characterData.image)
-              .setDescription(
-                characterData.description &&
-                  characterData.description.length < 2000
-                  ? characterData.description
-                  : ""
-              )
               .addField("Rarity", characterData.rarity)
         );
 

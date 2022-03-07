@@ -13,12 +13,6 @@ export const onePull: Button = {
         const characterEmbed = new MessageEmbed()
           .setTitle(characterData[0].name + " from " + characterData[0].anime)
           .setImage(characterData[0].image)
-          .setDescription(
-            characterData[0].description &&
-              characterData[0].description.length < 2000
-              ? characterData[0].description
-              : ""
-          )
           .addField("Rarity", characterData[0].rarity);
 
         await interaction.followUp({
