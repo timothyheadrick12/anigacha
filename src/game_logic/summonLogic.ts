@@ -1,7 +1,8 @@
-import { randomInt } from "crypto";
-import Player from "../models/Players";
-import getCharacter from "../requests/getCharacter";
-import { ReqCharacterData } from "../typings/CharacterData";
+import {randomInt} from 'crypto';
+import {sleep} from '../globals';
+import Player from '../models/Players';
+import getCharacter from '../requests/getCharacter';
+import {ReqCharacterData} from '../typings/CharacterData';
 
 var recentRequests = 0;
 const MAX_REQUESTS = 80;
@@ -21,29 +22,29 @@ export const summon = (
   fillBuffer(amount);
   summonedCharacters.forEach((character: ReqCharacterData, index: number) => {
     switch (character.rarity) {
-      case "★":
-      case "★★":
+      case '★':
+      case '★★':
         player.threeStarPity++;
         player.fourStarPity++;
         player.fiveStarPity++;
         break;
-      case "★★★":
+      case '★★★':
         player.threeStarPity = 0;
         player.fourStarPity++;
         player.fiveStarPity++;
         break;
-      case "★★★★":
+      case '★★★★':
         player.fourStarPity = 0;
         player.fiveStarPity++;
         break;
-      case "★★★★★":
+      case '★★★★★':
         if (Math.random() <= FIVE_STAR_KILL_CHANCE) {
-          while (character.rarity == "★★★★★" && summonBuffer.length > 0) {
+          while (character.rarity == '★★★★★' && summonBuffer.length > 0) {
             fillBuffer(1);
             player.fiveStarPity++;
             character = summonBuffer.shift()!;
           }
-          console.log("Killed five star");
+          console.log('Killed five star');
           summonedCharacters[index] = character;
         } else {
           player.fiveStarPity = 0;
@@ -69,15 +70,6 @@ export const fillBuffer = async (amount: number) => {
       console.log(error);
       i--;
     }
-    sleep(200)
-   
+    sleep(300);
   }
 };
-
-function sleep(milliseconds: number) {
-  const date = Date.now();
-  let currentDate = null;
-  do {
-    currentDate = Date.now();
-  } while (currentDate - date < milliseconds);
-}

@@ -20,8 +20,8 @@ import {
   HasOneGetAssociationMixin,
   CreationOptional,
   NonAttribute,
-} from "sequelize";
-import Character from "./Characters";
+} from 'sequelize';
+import Character from './Characters';
 export default class Player extends Model<
   InferAttributes<Player>,
   InferCreationAttributes<Player>
@@ -33,6 +33,7 @@ export default class Player extends Model<
   declare fourStarPity: CreationOptional<number>;
   declare threeStarPity: CreationOptional<number>;
   declare primaryCharacter?: NonAttribute<Character>;
+  declare inDuel?: NonAttribute<boolean>;
 
   declare getCharacters: HasManyGetAssociationsMixin<Character>;
   declare addCharacter: HasManyAddAssociationMixin<Character, number>;
@@ -43,10 +44,10 @@ export default class Player extends Model<
   declare hasCharacter: HasManyHasAssociationMixin<Character, number>;
   declare hasCharacters: HasManyHasAssociationsMixin<Character, number>;
   declare countCharacter: HasManyCountAssociationsMixin;
-  declare createCharacter: HasManyCreateAssociationMixin<Character, "owner_id">;
+  declare createCharacter: HasManyCreateAssociationMixin<Character, 'owner_id'>;
 
   declare getPrimaryCharacter: HasOneGetAssociationMixin<Character>;
-  declare setPrimaryCharacter: HasOneSetAssociationMixin<Character, "id">;
+  declare setPrimaryCharacter: HasOneSetAssociationMixin<Character, 'id'>;
   declare createPrimaryCharacter: HasOneCreateAssociationMixin<Character>;
 
   declare static associations: {
@@ -89,7 +90,7 @@ export const playersInit = (sequelize: Sequelize) => {
     },
     {
       sequelize,
-      tableName: "players",
+      tableName: 'players',
     }
   );
 };

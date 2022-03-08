@@ -3,10 +3,10 @@ import {
   ButtonInteraction,
   Collection,
   Interaction,
-} from "discord.js";
-import getPopularityOfRank from "./requests/getPopularityOfRank";
-import Character from "./models/Characters";
-import Player from "./models/Players";
+} from 'discord.js';
+import getPopularityOfRank from './requests/getPopularityOfRank';
+import Character from './models/Characters';
+import Player from './models/Players';
 
 export const players = new Collection<string, Player>();
 
@@ -38,9 +38,17 @@ export const updatePopularity = async () => {
 };
 
 export const calculateRarity = (favourites: number) => {
-  if (favourites >= popularityCut.top100) return "★★★★★";
-  else if (favourites >= popularityCut.top1000) return "★★★★";
-  else if (favourites >= popularityCut.top2500) return "★★★";
-  else if (favourites >= popularityCut.top10000) return "★★";
-  else return "★";
+  if (favourites >= popularityCut.top100) return '★★★★★';
+  else if (favourites >= popularityCut.top1000) return '★★★★';
+  else if (favourites >= popularityCut.top2500) return '★★★';
+  else if (favourites >= popularityCut.top10000) return '★★';
+  else return '★';
 };
+
+export function sleep(milliseconds: number) {
+  const date = Date.now();
+  let currentDate = null;
+  do {
+    currentDate = Date.now();
+  } while (currentDate - date < milliseconds);
+}
