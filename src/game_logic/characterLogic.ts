@@ -1,8 +1,8 @@
-import Player from "../models/Players";
-import { popularityCut } from "../globals";
-import { randomInt } from "crypto";
-import Character from "../models/Characters";
-import { ReqCharacterData } from "../typings/CharacterData";
+import Player from '../models/Players';
+import {popularityCut} from '../globals';
+import {randomInt} from 'crypto';
+import Character from '../models/Characters';
+import {ReqCharacterData} from '../typings/CharacterData';
 
 export const MAX_STAT = 1000000000000000;
 
@@ -23,6 +23,7 @@ export const createCharacter = async (
     defenseCap: stats.defenseCap,
     attackCap: stats.attackCap,
     avoCap: stats.avoCap,
+    spdCap: stats.spdCap,
     hitCap: stats.hitCap,
     critCap: stats.critCap,
     luckCap: stats.luckCap,
@@ -35,6 +36,7 @@ export const createCharacter = async (
     hit: stats.hit,
     charisma: stats.charisma,
     avo: stats.avo,
+    spd: stats.spd,
     luck: stats.luck,
     crit: stats.crit,
   });
@@ -48,6 +50,7 @@ export const calculateStat = (popularity: number): any => {
     defenseCap: 0,
     attackCap: 0,
     avoCap: 0,
+    spdCap: 0,
     hitCap: 0,
     critCap: 0,
     luckCap: 0,
@@ -58,6 +61,7 @@ export const calculateStat = (popularity: number): any => {
     attack: 0,
     luck: 0,
     avo: 0,
+    spd: 0,
     defense: 0,
     hit: 0,
     charisma: 0,
@@ -74,6 +78,7 @@ export const calculateStat = (popularity: number): any => {
   stats.attackCap = randomInt(1, stats.stat_coef);
   stats.defenseCap = randomInt(1, stats.stat_coef);
   stats.avoCap = randomInt(1, stats.stat_coef);
+  stats.spdCap = randomInt(1, stats.stat_coef);
   stats.hitCap = randomInt(1, stats.stat_coef);
   stats.critCap = randomInt(1, stats.stat_coef);
   stats.luckCap = randomInt(1, stats.stat_coef);
@@ -83,6 +88,7 @@ export const calculateStat = (popularity: number): any => {
   stats.attack = Math.floor((Math.random() * 0.1 + 0.01) * stats.attackCap);
   stats.luck = Math.floor((Math.random() * 0.1 + 0.01) * stats.luckCap);
   stats.avo = Math.floor((Math.random() * 0.1 + 0.01) * stats.avoCap);
+  stats.spd = Math.floor((Math.random() * 0.1 + 0.01) * stats.avoCap);
   stats.hit = Math.floor((Math.random() * 0.1 + 0.01) * stats.hitCap);
   stats.defense = Math.floor((Math.random() * 0.1 + 0.01) * stats.defenseCap);
   stats.crit = Math.floor((Math.random() * 0.1 + 0.01) * stats.critCap);
@@ -93,6 +99,7 @@ export const calculateStat = (popularity: number): any => {
     stats.attack +
     stats.luck +
     stats.avo +
+    stats.spd +
     stats.hit +
     stats.defense +
     stats.crit +

@@ -24,6 +24,7 @@ export default class Character extends Model<
   declare attackCap: number;
   declare avoCap: number;
   declare hitCap: number;
+  declare spdCap: number;
   declare critCap: number;
   declare luckCap: number;
   declare charismaCap: number;
@@ -37,6 +38,7 @@ export default class Character extends Model<
   declare defense: number;
   declare attack: number;
   declare avo: number;
+  declare spd: number;
   declare hit: number;
   declare crit: number;
   declare luck: number;
@@ -99,6 +101,10 @@ export const charactersInit = (sequelize: Sequelize) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
+      spdCap: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
       hitCap: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -132,6 +138,10 @@ export const charactersInit = (sequelize: Sequelize) => {
         allowNull: false,
       },
       avo: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      spd: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },

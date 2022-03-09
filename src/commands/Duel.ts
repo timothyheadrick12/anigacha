@@ -39,6 +39,10 @@ export const Duel: OptionCommand = {
         content:
           'You need to set your primary character before challenging someone to a duel.',
       });
+    } else if (!players.get(interaction.user.id)!.inDuel) {
+      await interaction.followUp({
+        content: 'You cannot duel two people at once!',
+      });
     } else {
       const oppPlayer = interaction.options.getUser('player', true);
       const buttonRow = new MessageActionRow().addComponents(
@@ -63,7 +67,7 @@ export const Duel: OptionCommand = {
         content:
           interaction.user.username +
           ' has challenged ' +
-          oppPlayer.username +
+          oppPlayer.toString() +
           ' to a duel! Will they accept?',
         components: [buttonRow],
       });
