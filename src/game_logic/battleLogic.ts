@@ -1,5 +1,4 @@
 import {ButtonInteraction, MessageEmbedOptions} from 'discord.js';
-import {Button} from 'src/typings/Button';
 import Character, {charactersInit} from '../models/Characters';
 import Player from '../models/Players';
 
