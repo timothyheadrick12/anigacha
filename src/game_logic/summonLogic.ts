@@ -1,8 +1,8 @@
-import { randomInt } from "crypto";
-import { sleep } from "../globals";
-import Player from "../models/Players";
-import getCharacter from "../requests/getCharacter";
-import { ReqCharacterData } from "../typings/CharacterData";
+import {randomInt} from 'crypto';
+import {sleep} from '../globals';
+import Player from '../models/Players';
+import getCharacter from '../requests/getCharacter';
+import {ReqCharacterData} from '../typings/CharacterData';
 
 var recentRequests = 0;
 const MAX_REQUESTS = 80;
@@ -22,29 +22,29 @@ export const summon = (
   fillBuffer(amount);
   summonedCharacters.forEach((character: ReqCharacterData, index: number) => {
     switch (character.rarity) {
-      case "★":
-      case "★★":
+      case '★':
+      case '★★':
         player.threeStarPity++;
         player.fourStarPity++;
         player.fiveStarPity++;
         break;
-      case "★★★":
+      case '★★★':
         player.threeStarPity = 0;
         player.fourStarPity++;
         player.fiveStarPity++;
         break;
-      case "★★★★":
+      case '★★★★':
         player.fourStarPity = 0;
         player.fiveStarPity++;
         break;
-      case "★★★★★":
+      case '★★★★★':
         if (Math.random() <= FIVE_STAR_KILL_CHANCE) {
-          while (character.rarity == "★★★★★" && summonBuffer.length > 0) {
+          while (character.rarity == '★★★★★' && summonBuffer.length > 0) {
             fillBuffer(1);
             player.fiveStarPity++;
             character = summonBuffer.shift()!;
           }
-          console.log("Killed five star");
+          console.log('Killed five star');
           summonedCharacters[index] = character;
         } else {
           player.fiveStarPity = 0;
@@ -67,7 +67,7 @@ export const fillBuffer = async (amount: number) => {
       const characterData = await getCharacter();
       summonBuffer.push(characterData);
     } catch {
-      console.log("Too many anilistapi requests in one second! waiting,,,");
+      console.log('Too many anilistapi requests in one second! waiting...');
       sleep(1000);
       i--;
     }

@@ -5,11 +5,11 @@ import {
   MessageButton,
 } from 'discord.js';
 import {OptionCommand} from '../typings/OptionCommand';
-import Character from '../models/Characters';
 import {players} from '../globals';
 import {Buttons} from '../Buttons';
 import Player from '../models/Players';
 import {createModAcceptDuel} from '../buttons/modAcceptDuel';
+import {createModDenyDuel} from '../buttons/modDenyDuel';
 
 export const Duel: OptionCommand = {
   name: 'duel',
@@ -39,7 +39,7 @@ export const Duel: OptionCommand = {
         content:
           'You need to set your primary character before challenging someone to a duel.',
       });
-    } else if (!players.get(interaction.user.id)!.inDuel) {
+    } else if (players.get(interaction.user.id)!.inDuel) {
       await interaction.followUp({
         content: 'You cannot duel two people at once!',
       });
@@ -61,6 +61,7 @@ export const Duel: OptionCommand = {
       );
 
       Buttons.push(createModAcceptDuel(interaction.user.id, oppPlayer.id));
+      Buttons.push(createModDenyDuel(interaction.user.id, oppPlayer.id));
 
       await interaction.followUp({
         ephemeral: false,

@@ -1,6 +1,13 @@
-import {ButtonInteraction, MessageEmbedOptions} from 'discord.js';
-import Character, {charactersInit} from '../models/Characters';
+import {
+  ButtonInteraction,
+  MessageActionRow,
+  MessageButton,
+  MessageEmbedOptions,
+} from 'discord.js';
+import {modDuelAction} from '../buttons/modDuelButtons';
+import Character from '../models/Characters';
 import Player from '../models/Players';
+import {Buttons} from '../Buttons';
 
 export enum FOCI_CHOICE {
   DEFENSE,
@@ -38,8 +45,12 @@ export class Battle {
   oppPlayer: BattlePlayer;
   turn: number;
   embed: MessageEmbedOptions;
+  buttons: MessageActionRow[];
+  buttonsStartIndex: number;
 
   constructor(lPlayer: Player, oPlayer: Player) {
+    lPlayer.inDuel = true;
+    oPlayer.inDuel = false;
     this.leadPlayer = {
       player: lPlayer,
       foci: START_FOCI,
@@ -88,13 +99,116 @@ export class Battle {
         },
       ],
     };
+    this.buttons = [
+      new MessageActionRow().addComponents(
+        new MessageButton()
+          .setLabel('ATTACK')
+          .setCustomId(
+            'modDuelAction' +
+              FOCI_CHOICE.ATTACK +
+              '_f_' +
+              this.leadPlayer.player.id +
+              '_t_' +
+              this.oppPlayer.player.id
+          )
+          .setStyle('PRIMARY'),
+        new MessageButton()
+          .setLabel('DEFENSE')
+          .setCustomId(
+            'modDuelAction' +
+              FOCI_CHOICE.DEFENSE +
+              '_f_' +
+              this.leadPlayer.player.id +
+              '_t_' +
+              this.oppPlayer.player.id
+          )
+          .setStyle('PRIMARY'),
+        new MessageButton()
+          .setLabel('SPEED')
+          .setCustomId(
+            'modDuelAction' +
+              FOCI_CHOICE.SPD +
+              '_f_' +
+              this.leadPlayer.player.id +
+              '_t_' +
+              this.oppPlayer.player.id
+          )
+          .setStyle('PRIMARY'),
+        new MessageButton()
+          .setLabel('CRIT')
+          .setCustomId(
+            'modDuelAction' +
+              FOCI_CHOICE.CRIT +
+              '_f_' +
+              this.leadPlayer.player.id +
+              '_t_' +
+              this.oppPlayer.player.id
+          )
+          .setStyle('PRIMARY')
+      ),
+      new MessageActionRow().addComponents(
+        new MessageButton()
+          .setLabel('AVO')
+          .setCustomId(
+            'modDuelAction' +
+              FOCI_CHOICE.AVO +
+              '_f_' +
+              this.leadPlayer.player.id +
+              '_t_' +
+              this.oppPlayer.player.id
+          )
+          .setStyle('PRIMARY'),
+        new MessageButton()
+          .setLabel('HIT')
+          .setCustomId(
+            'modDuelAction' +
+              FOCI_CHOICE.HIT +
+              '_f_' +
+              this.leadPlayer.player.id +
+              '_t_' +
+              this.oppPlayer.player.id
+          )
+          .setStyle('PRIMARY'),
+        new MessageButton()
+          .setLabel('REVEAL')
+          .setCustomId(
+            'modDuelAction' +
+              FOCI_CHOICE.REVEAL +
+              '_f_' +
+              this.leadPlayer.player.id +
+              '_t_' +
+              this.oppPlayer.player.id
+          )
+          .setStyle('PRIMARY'),
+        new MessageButton()
+          .setLabel('PASS')
+          .setCustomId(
+            'modDuelAction' +
+              FOCI_CHOICE.PASS +
+              '_f_' +
+              this.leadPlayer.player.id +
+              '_t_' +
+              this.oppPlayer.player.id
+          )
+          .setStyle('PRIMARY')
+      ),
+    ];
+    this.buttonsStartIndex = Buttons.length;
+    Buttons.push(modDuelAction(FOCI_CHOICE.ATTACK, this));
+    Buttons.push(modDuelAction(FOCI_CHOICE.DEFENSE, this));
+    Buttons.push(modDuelAction(FOCI_CHOICE.SPD, this));
+    Buttons.push(modDuelAction(FOCI_CHOICE.CRIT, this));
+    Buttons.push(modDuelAction(FOCI_CHOICE.AVO, this));
+    Buttons.push(modDuelAction(FOCI_CHOICE.HIT, this));
+    Buttons.push(modDuelAction(FOCI_CHOICE.REVEAL, this));
+    Buttons.push(modDuelAction(FOCI_CHOICE.PASS, this));
   }
 
   async start(interaction: ButtonInteraction) {
     await interaction.editReply({
       content: '',
       embeds: [this.embed],
-      components: [],
+      components: this.buttons,
     });
   }
 
@@ -171,7 +285,6 @@ export class Battle {
         this.leadPlayer.remainingActions <= 0
       ) {
         await this.clearButtons(interaction);
-        await this.updateEmbed(interaction, '...Combat Phase...');
         await this.computeTurn(interaction);
       }
     }
@@ -179,6 +292,7 @@ export class Battle {
 
   async computeTurn(interaction: ButtonInteraction): Promise<boolean> {
     var turnOrder: BattlePlayer[] = [];
+    await this.updateEmbed(interaction, '...Combat Phase...');
     if (
       this.leadPlayer.character.spd * this.leadPlayer.multipliers.spd >
       this.oppPlayer.character.spd * this.oppPlayer.multipliers.spd
@@ -191,23 +305,21 @@ export class Battle {
       turnOrder.push(this.leadPlayer);
       turnOrder.push(this.oppPlayer);
     }
-    await interaction.editReply({
-      content:
-        turnOrder[0].character.name +
+    await this.updateEmbed(
+      interaction,
+      turnOrder[0].character.name +
         turnOrder[0].character.rarity +
-        ' moved faster and will act first',
-      components: [],
-    });
+        ' moved faster and will act first'
+    );
 
     var didCrit: boolean;
     for (var i = 0; i < 2; i++) {
-      await interaction.editReply({
-        content:
-          turnOrder[i].character.name +
+      await this.updateEmbed(
+        interaction,
+        turnOrder[i].character.name +
           turnOrder[i].character.rarity +
-          ' makes there move...',
-        components: [],
-      });
+          ' makes there move...'
+      );
       var j = i + 1;
       var critChance =
         ((turnOrder[i].character.crit * turnOrder[i].multipliers.crit) /
@@ -217,15 +329,16 @@ export class Battle {
       critChance = critChance > MAX_CRIT ? MAX_CRIT : critChance;
       if (Math.random() <= critChance) {
         turnOrder[j].character.isAlive = false;
-        await interaction.editReply({
-          content:
-            turnOrder[j].player.name +
+        turnOrder[j].character.save();
+        await this.updateEmbed(
+          interaction,
+          turnOrder[j].player.name +
             "'s character " +
             turnOrder[j].character.name +
             turnOrder[j].character.rarity +
-            ' was hit by a critical attack. They are now dead!',
-          components: [],
-        });
+            ' was hit by a critical attack. They are now dead!'
+        );
+        await this.end();
         return false;
       }
       var hitChance =
@@ -233,15 +346,14 @@ export class Battle {
         (turnOrder[j].character.avo * turnOrder[j].multipliers.avo * 2);
       var hit = Math.random() <= hitChance;
       if (!hit) {
-        await interaction.editReply({
-          content:
-            turnOrder[j].player.name +
+        await this.updateEmbed(
+          interaction,
+          turnOrder[j].player.name +
             "'s character " +
             turnOrder[j].character.name +
             turnOrder[j].character.rarity +
-            ' dodged an incoming attack!',
-          components: [],
-        });
+            ' dodged an incoming attack!'
+        );
       } else {
         var damage =
           turnOrder[i].character.attack * turnOrder[i].multipliers.atk -
@@ -250,36 +362,36 @@ export class Battle {
         turnOrder[j].character.curHP -= damage;
         if (turnOrder[j].character.curHP < 0) {
           turnOrder[j].character.isAlive = false;
-          await interaction.editReply({
-            content:
-              turnOrder[j].player.name +
+          turnOrder[j].character.save();
+          await this.updateEmbed(
+            interaction,
+            turnOrder[j].player.name +
               "'s character " +
               turnOrder[j].character.name +
               turnOrder[j].character.rarity +
-              ' was hit by a fatal blow. They are now dead!',
-            components: [],
-          });
+              ' was hit by a fatal blow. They are now dead!'
+          );
+          await this.end();
           return false;
         } else {
-          await interaction.editReply({
-            content:
-              turnOrder[i].player.name +
+          await this.updateEmbed(
+            interaction,
+            turnOrder[i].player.name +
               "'s character " +
               turnOrder[i].character.name +
               turnOrder[i].character.rarity +
               ' dealt ' +
               damage +
-              ' damage!',
-            components: [],
-          });
+              ' damage!'
+          );
         }
       }
     }
-    this.nextTurn();
+    await this.nextTurn(interaction);
     return true;
   }
 
-  nextTurn() {
+  async nextTurn(interaction: ButtonInteraction) {
     this.leadPlayer.multipliers = {
       atk: 1,
       def: 1,
@@ -303,6 +415,10 @@ export class Battle {
       name: 'Turn ' + this.turn,
       value: 'Action phase...\n',
     });
+    await interaction.editReply({
+      embeds: [this.embed],
+      components: this.buttons,
+    });
   }
 
   async updateEmbed(interaction: ButtonInteraction, updateStr: string) {
@@ -316,5 +432,11 @@ export class Battle {
     await interaction.editReply({
       components: [],
     });
+  }
+
+  end() {
+    Buttons.splice(this.buttonsStartIndex, 8);
+    this.leadPlayer.player.inDuel = false;
+    this.oppPlayer.player.inDuel = false;
   }
 }
