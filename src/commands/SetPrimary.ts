@@ -1,3 +1,5 @@
+//Allows players to set their primary character based on id
+
 import {Client, CommandInteraction} from 'discord.js';
 import {OptionCommand} from '../typings/OptionCommand';
 import Character from '../models/Characters';
@@ -39,6 +41,8 @@ export const SetPrimary: OptionCommand = {
         });
       }
     } catch (error) {
+      //Typically this will not run, but just in case since the exact
+      //output of Character.findByPk is unpredictable
       await interaction.followUp({
         ephemeral: true,
         content:

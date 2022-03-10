@@ -1,3 +1,8 @@
+//Listens for any commands, buttons, or selectMenus
+//by searching the lists for each of those types.
+//Calls the run() function of the interaction specified
+//by id.
+
 import {
   BaseCommandInteraction,
   ButtonInteraction,

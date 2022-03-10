@@ -1,11 +1,18 @@
+//This file is used to create characters for the database
+//that are associated with a player.
+//Important files: summonLogic.ts
+
 import Player from '../models/Players';
 import {popularityCut} from '../globals';
 import {randomInt} from 'crypto';
 import Character from '../models/Characters';
 import {ReqCharacterData} from '../typings/CharacterData';
 
+//Max possible stat_coefficient for chaaracters
 export const MAX_STAT = 1000000000000000;
 
+//Creates a new character in the database based on
+//provided CharacterData
 export const createCharacter = async (
   player: Player,
   characterData: ReqCharacterData
@@ -42,6 +49,7 @@ export const createCharacter = async (
   });
 };
 
+//Calculates character stats based on popularity
 export const calculateStat = (popularity: number): any => {
   const stats = {
     stat_coef: 0,
@@ -67,6 +75,8 @@ export const calculateStat = (popularity: number): any => {
     charisma: 0,
     crit: 0,
   };
+  //stat_coefficient is most important in that it is the max possible
+  //cap of any other stat
   if (popularity >= popularityCut.top) {
     stats.stat_coef = MAX_STAT;
   } else {

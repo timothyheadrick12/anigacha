@@ -1,3 +1,7 @@
+//Type used for data retrieved upon initially requesting a character
+//from the anilist api in getCharacter.ts
+//Important files: getCharacter.ts
+
 export interface ReqCharacterData {
   id: number;
   name: string;

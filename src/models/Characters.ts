@@ -1,3 +1,5 @@
+//Character model used by the database to decide its format
+
 import {
   Model,
   InferAttributes,
@@ -10,7 +12,7 @@ export default class Character extends Model<
   InferAttributes<Character>,
   InferCreationAttributes<Character>
 > {
-  declare id: CreationOptional<number>;
+  declare id: CreationOptional<number>; //anything with default can be optional
   declare character_id: number;
   declare name: string;
   declare anime: string;

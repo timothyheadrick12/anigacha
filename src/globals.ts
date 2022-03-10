@@ -1,15 +1,15 @@
-import {
-  BaseCommandInteraction,
-  ButtonInteraction,
-  Collection,
-  Interaction,
-} from 'discord.js';
+//This file contains miscallaneous functions and variables used
+// throughout the program but not worth having their own file.
+
+import {Collection} from 'discord.js';
 import getPopularityOfRank from './requests/getPopularityOfRank';
-import Character from './models/Characters';
 import Player from './models/Players';
 
+//List of all players keyed by user.id. Used to access players throughout
+//program.
 export const players = new Collection<string, Player>();
 
+//load players in database into players on startup
 export const getPlayers = async () => {
   Player.findAll().then((fPlayers) =>
     fPlayers.forEach((player) => {
@@ -21,6 +21,7 @@ export const getPlayers = async () => {
   );
 };
 
+//Used in characterLogic for stat calculations
 export var popularityCut = {
   top: 0,
   top100: 0,
@@ -29,6 +30,7 @@ export var popularityCut = {
   top10000: 0,
 };
 
+//sets value of all variables in popularityCut
 export const updatePopularity = async () => {
   popularityCut.top = await getPopularityOfRank(1);
   popularityCut.top100 = await getPopularityOfRank(100);
@@ -37,6 +39,7 @@ export const updatePopularity = async () => {
   popularityCut.top10000 = await getPopularityOfRank(10000);
 };
 
+//calculates rarity star string based on favourites compared to others
 export const calculateRarity = (favourites: number) => {
   if (favourites >= popularityCut.top100) return '★★★★★';
   else if (favourites >= popularityCut.top1000) return '★★★★';
@@ -45,6 +48,7 @@ export const calculateRarity = (favourites: number) => {
   else return '★';
 };
 
+//A general sleep function
 export function sleep(milliseconds: number) {
   const date = Date.now();
   let currentDate = null;

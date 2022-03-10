@@ -1,3 +1,5 @@
+//Player model used by database
+
 import {
   Model,
   InferAttributes,
@@ -32,6 +34,8 @@ export default class Player extends Model<
   declare fiveStarPity: CreationOptional<number>;
   declare fourStarPity: CreationOptional<number>;
   declare threeStarPity: CreationOptional<number>;
+  //not part of database. These need to be set manually somewhere in code.
+  //They are only for program logic during runtime
   declare primaryCharacter?: NonAttribute<Character>;
   declare inDuel?: NonAttribute<boolean>;
 

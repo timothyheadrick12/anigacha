@@ -1,3 +1,7 @@
+//Given a certain rank of popularity, this gets how many
+//favourites that popularity rank has from the anilist api
+//Important files: globals
+
 import axios from 'axios';
 
 export default async (rank: number) =>

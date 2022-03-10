@@ -1,3 +1,9 @@
+//This file contains all logic related to battles or, more specifically,
+//duels. Creating buttons, editing the duel message and calculating the
+//result of player actions all happens within this file. Once a player
+//accepts a duel, the Battle class takes over until the end of that duel.
+//Important related files: modDuelButton, modAcceptDuel
+
 import {
   ButtonInteraction,
   MessageActionRow,
@@ -48,6 +54,8 @@ export class Battle {
   buttons: MessageActionRow[];
   buttonsStartIndex: number;
 
+  //set players to being in duel, create embed,
+  //create buttons, and add buttons to Buttons list
   constructor(lPlayer: Player, oPlayer: Player) {
     lPlayer.inDuel = true;
     oPlayer.inDuel = false;
@@ -204,6 +212,8 @@ export class Battle {
     Buttons.push(modDuelAction(FOCI_CHOICE.PASS, this));
   }
 
+  //Called after battle creation to reflect that the battle
+  //has started in the duel message.
   async start(interaction: ButtonInteraction) {
     await interaction.editReply({
       content: '',
@@ -212,6 +222,8 @@ export class Battle {
     });
   }
 
+  //called by modDuelButton to allow players to choose an action
+  // and progress the duel to the combat phase if need be
   async takeAction(
     interaction: ButtonInteraction,
     player: Player,
@@ -265,6 +277,10 @@ export class Battle {
         curPlayer.remainingActions--;
         break;
       case FOCI_CHOICE.REVEAL:
+        await interaction.followUp({
+          ephemeral: true,
+          content: 'This button does nothing right now',
+        });
         break;
     }
     await interaction.followUp({
@@ -290,6 +306,8 @@ export class Battle {
     }
   }
 
+  //Uses actions and character stats to calculate the outcome of a turn
+  //During each step of calculation, the message embed is editted
   async computeTurn(interaction: ButtonInteraction): Promise<boolean> {
     var turnOrder: BattlePlayer[] = [];
     await this.updateEmbed(interaction, '...Combat Phase...');
@@ -391,6 +409,8 @@ export class Battle {
     return true;
   }
 
+  //progresses to the next turn by resetting multipliers and adding buttons
+  //to message again
   async nextTurn(interaction: ButtonInteraction) {
     this.leadPlayer.multipliers = {
       atk: 1,
@@ -413,7 +433,7 @@ export class Battle {
     this.turn++;
     this.embed.fields!.push({
       name: 'Turn ' + this.turn,
-      value: 'Action phase...\n',
+      value: '...Action phase...\n',
     });
     await interaction.editReply({
       embeds: [this.embed],
@@ -421,6 +441,8 @@ export class Battle {
     });
   }
 
+  //Adds a string to the current working field of the embed
+  //Which field the string is added to depends on the turn.
   async updateEmbed(interaction: ButtonInteraction, updateStr: string) {
     this.embed.fields![this.turn - 1].value += updateStr + '\n';
     await interaction.editReply({
@@ -428,12 +450,14 @@ export class Battle {
     });
   }
 
+  //clear the buttons from the embed
   async clearButtons(interaction: ButtonInteraction) {
     await interaction.editReply({
       components: [],
     });
   }
 
+  //remove the buttons from the button list
   end() {
     Buttons.splice(this.buttonsStartIndex, 8);
     this.leadPlayer.player.inDuel = false;

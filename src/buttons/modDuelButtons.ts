@@ -1,8 +1,11 @@
+//A modifiable duel action button that appears repeatedly
+//in duels. Each instance of this button corresponds
+//to a specific duel action
+//Import files: game_logic/battleLogic.ts
+
 import {ButtonInteraction, Client, MessageEmbed} from 'discord.js';
 import {Button} from '../typings/Button';
 import {players} from '../globals';
-import {createCharacter} from '../game_logic/characterLogic';
-import {summon} from '../game_logic/summonLogic';
 import {Battle, FOCI_CHOICE} from '../game_logic/battleLogic';
 
 export const modDuelAction = (action: FOCI_CHOICE, battle: Battle): Button => ({
@@ -14,8 +17,6 @@ export const modDuelAction = (action: FOCI_CHOICE, battle: Battle): Button => ({
     '_t_' +
     battle.oppPlayer.player.id,
   run: async (client: Client, interaction: ButtonInteraction) => {
-    const challengerStr = interaction.customId.match(/(?<=_f_).+(?=_t_)/g)![0];
-    const opponentStr = interaction.customId.match(/(?<=_t_).+/g)![0];
     if (
       interaction.user.id != battle.leadPlayer.player.id &&
       interaction.user.id != battle.oppPlayer.player.id

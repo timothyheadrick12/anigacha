@@ -1,3 +1,5 @@
+//Executed when the bot is online. Registers commands
+
 import {Client} from 'discord.js';
 import {Commands} from '../Commands';
 

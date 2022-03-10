@@ -1,15 +1,20 @@
-import axios from "axios";
-import { randomInt } from "crypto";
-import { calculateRarity } from "../globals";
-import { ReqCharacterData } from "../typings/CharacterData";
+//Given a popularity rank this gets the id, favourites,
+//full name, image, and description of a character.
+//Also calculates the rarity of a character.
+//Import files: typings/CharacterData.ts
+
+import axios from 'axios';
+import {randomInt} from 'crypto';
+import {calculateRarity} from '../globals';
+import {ReqCharacterData} from '../typings/CharacterData';
 
 export default async () =>
   axios({
-    url: "https://graphql.anilist.co",
-    method: "post",
+    url: 'https://graphql.anilist.co',
+    method: 'post',
     headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
     },
     data: {
       query: `
@@ -39,7 +44,7 @@ export default async () =>
         }
       }
       `,
-      variables: { popularity_rank: randomInt(1, 1001) },
+      variables: {popularity_rank: randomInt(1, 1001)},
     },
   }).then((result) => {
     const characterNode =

@@ -1,3 +1,6 @@
+//This was a test file and is unused now. It gests the most popular
+//character from the anilist api
+
 import axios from 'axios';
 
 export default async () =>
