@@ -66,8 +66,8 @@ export const fillBuffer = async (amount: number) => {
       recentRequests++;
       const characterData = await getCharacter();
       summonBuffer.push(characterData);
-    } catch (error) {
-      console.log(error);
+    } catch {
+      console.log("Too many anilistapi requests in one second! waiting,,,");
       sleep(1000);
       i--;
     }
