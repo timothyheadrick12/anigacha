@@ -402,6 +402,7 @@ export class Battle {
               damage +
               ' damage!'
           );
+          turnOrder[j].character.save();
         }
       }
     }
