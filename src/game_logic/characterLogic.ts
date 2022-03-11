@@ -23,6 +23,7 @@ export const createCharacter = async (
     name: characterData.name,
     anime: characterData.anime,
     popularity: characterData.favourites,
+    image: characterData.image,
     rarity: characterData.rarity,
     stat_coef: stats.stat_coef,
     power: stats.power,
