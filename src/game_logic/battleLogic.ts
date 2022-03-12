@@ -7,13 +7,15 @@
 import {
   ButtonInteraction,
   MessageActionRow,
+  MessageAttachment,
   MessageButton,
   MessageEmbedOptions,
-} from 'discord.js';
-import {modDuelAction} from '../buttons/modDuelButtons';
-import Character from '../models/Characters';
-import Player from '../models/Players';
-import {Buttons} from '../Buttons';
+} from "discord.js";
+import { modDuelAction } from "../buttons/modDuelButtons";
+import Character from "../models/Characters";
+import Player from "../models/Players";
+import { Buttons } from "../Buttons";
+import { Canvas, createCanvas, loadImage } from "canvas";
 
 export enum FOCI_CHOICE {
   DEFENSE,
@@ -95,110 +97,110 @@ export class Battle {
         "'s " +
         lPlayer.primaryCharacter!.name +
         lPlayer.primaryCharacter!.rarity +
-        ' vs. ' +
+        " vs. " +
         oPlayer.name +
         "'s " +
         oPlayer.primaryCharacter!.name +
         oPlayer.primaryCharacter!.rarity,
       fields: [
         {
-          name: 'Turn ' + this.turn,
-          value: '...Action Phase...\n',
+          name: "Turn " + this.turn,
+          value: "**...Action Phase...**\n",
         },
       ],
     };
     this.buttons = [
       new MessageActionRow().addComponents(
         new MessageButton()
-          .setLabel('ATTACK')
+          .setLabel("ATTACK")
           .setCustomId(
-            'modDuelAction' +
+            "modDuelAction" +
               FOCI_CHOICE.ATTACK +
-              '_f_' +
+              "_f_" +
               this.leadPlayer.player.id +
-              '_t_' +
+              "_t_" +
               this.oppPlayer.player.id
           )
-          .setStyle('PRIMARY'),
+          .setStyle("PRIMARY"),
         new MessageButton()
-          .setLabel('DEFENSE')
+          .setLabel("DEFENSE")
           .setCustomId(
-            'modDuelAction' +
+            "modDuelAction" +
               FOCI_CHOICE.DEFENSE +
-              '_f_' +
+              "_f_" +
               this.leadPlayer.player.id +
-              '_t_' +
+              "_t_" +
               this.oppPlayer.player.id
           )
-          .setStyle('PRIMARY'),
+          .setStyle("PRIMARY"),
         new MessageButton()
-          .setLabel('SPEED')
+          .setLabel("SPEED")
           .setCustomId(
-            'modDuelAction' +
+            "modDuelAction" +
               FOCI_CHOICE.SPD +
-              '_f_' +
+              "_f_" +
               this.leadPlayer.player.id +
-              '_t_' +
+              "_t_" +
               this.oppPlayer.player.id
           )
-          .setStyle('PRIMARY'),
+          .setStyle("PRIMARY"),
         new MessageButton()
-          .setLabel('CRIT')
+          .setLabel("CRIT")
           .setCustomId(
-            'modDuelAction' +
+            "modDuelAction" +
               FOCI_CHOICE.CRIT +
-              '_f_' +
+              "_f_" +
               this.leadPlayer.player.id +
-              '_t_' +
+              "_t_" +
               this.oppPlayer.player.id
           )
-          .setStyle('PRIMARY')
+          .setStyle("PRIMARY")
       ),
       new MessageActionRow().addComponents(
         new MessageButton()
-          .setLabel('AVO')
+          .setLabel("AVO")
           .setCustomId(
-            'modDuelAction' +
+            "modDuelAction" +
               FOCI_CHOICE.AVO +
-              '_f_' +
+              "_f_" +
               this.leadPlayer.player.id +
-              '_t_' +
+              "_t_" +
               this.oppPlayer.player.id
           )
-          .setStyle('PRIMARY'),
+          .setStyle("PRIMARY"),
         new MessageButton()
-          .setLabel('HIT')
+          .setLabel("HIT")
           .setCustomId(
-            'modDuelAction' +
+            "modDuelAction" +
               FOCI_CHOICE.HIT +
-              '_f_' +
+              "_f_" +
               this.leadPlayer.player.id +
-              '_t_' +
+              "_t_" +
               this.oppPlayer.player.id
           )
-          .setStyle('PRIMARY'),
+          .setStyle("PRIMARY"),
         new MessageButton()
-          .setLabel('REVEAL')
+          .setLabel("REVEAL")
           .setCustomId(
-            'modDuelAction' +
+            "modDuelAction" +
               FOCI_CHOICE.REVEAL +
-              '_f_' +
+              "_f_" +
               this.leadPlayer.player.id +
-              '_t_' +
+              "_t_" +
               this.oppPlayer.player.id
           )
-          .setStyle('PRIMARY'),
+          .setStyle("PRIMARY"),
         new MessageButton()
-          .setLabel('PASS')
+          .setLabel("PASS")
           .setCustomId(
-            'modDuelAction' +
+            "modDuelAction" +
               FOCI_CHOICE.PASS +
-              '_f_' +
+              "_f_" +
               this.leadPlayer.player.id +
-              '_t_' +
+              "_t_" +
               this.oppPlayer.player.id
           )
-          .setStyle('PRIMARY')
+          .setStyle("PRIMARY")
       ),
     ];
     this.buttonsStartIndex = Buttons.length;
@@ -216,9 +218,10 @@ export class Battle {
   //has started in the duel message.
   async start(interaction: ButtonInteraction) {
     await interaction.editReply({
-      content: '',
+      content: "Duel!",
       embeds: [this.embed],
       components: this.buttons,
+      attachments: [await this.duelImage()],
     });
   }
 
@@ -238,7 +241,7 @@ export class Battle {
     if (curPlayer.remainingActions <= 0 || curPlayer.foci <= 0) {
       await interaction.followUp({
         ephemeral: true,
-        content: 'You have no actions remaining.',
+        content: "You have no actions remaining.",
       });
       return;
     }
@@ -279,22 +282,22 @@ export class Battle {
       case FOCI_CHOICE.REVEAL:
         await interaction.followUp({
           ephemeral: true,
-          content: 'This button does nothing right now',
+          content: "This button does nothing right now",
         });
         break;
     }
     await interaction.followUp({
       ephemeral: true,
       content:
-        'Foci: ' +
-        '✪'.repeat(curPlayer.foci) +
-        '\nRemaining actions: ' +
+        "Foci: " +
+        "✪".repeat(curPlayer.foci) +
+        "\nRemaining actions: " +
         curPlayer.remainingActions,
     });
     if (curPlayer.remainingActions <= 0) {
       await this.updateEmbed(
         interaction,
-        curPlayer.player.name + ' finished choosing actions'
+        curPlayer.player.name + " finished choosing actions"
       );
       if (
         this.oppPlayer.remainingActions <= 0 &&
@@ -310,7 +313,7 @@ export class Battle {
   //During each step of calculation, the message embed is editted
   async computeTurn(interaction: ButtonInteraction): Promise<boolean> {
     var turnOrder: BattlePlayer[] = [];
-    await this.updateEmbed(interaction, '...Combat Phase...');
+    await this.updateEmbed(interaction, "**...Combat Phase...**");
     if (
       this.leadPlayer.character.spd * this.leadPlayer.multipliers.spd >
       this.oppPlayer.character.spd * this.oppPlayer.multipliers.spd
@@ -327,7 +330,7 @@ export class Battle {
       interaction,
       turnOrder[0].character.name +
         turnOrder[0].character.rarity +
-        ' moved faster and will act first'
+        " moved faster and will act first"
     );
 
     var didCrit: boolean;
@@ -336,7 +339,7 @@ export class Battle {
         interaction,
         turnOrder[i].character.name +
           turnOrder[i].character.rarity +
-          ' makes there move...'
+          " makes there move..."
       );
       var j = i + 1;
       var critChance =
@@ -354,7 +357,7 @@ export class Battle {
             "'s character " +
             turnOrder[j].character.name +
             turnOrder[j].character.rarity +
-            ' was hit by a critical attack. They are now dead!'
+            " was hit by a critical attack. They are now dead!"
         );
         await this.end();
         return false;
@@ -370,7 +373,7 @@ export class Battle {
             "'s character " +
             turnOrder[j].character.name +
             turnOrder[j].character.rarity +
-            ' dodged an incoming attack!'
+            " dodged an incoming attack!"
         );
       } else {
         var damage =
@@ -387,7 +390,7 @@ export class Battle {
               "'s character " +
               turnOrder[j].character.name +
               turnOrder[j].character.rarity +
-              ' was hit by a fatal blow. They are now dead!'
+              " was hit by a fatal blow. They are now dead!"
           );
           await this.end();
           return false;
@@ -398,9 +401,9 @@ export class Battle {
               "'s character " +
               turnOrder[i].character.name +
               turnOrder[i].character.rarity +
-              ' dealt ' +
+              " dealt " +
               damage +
-              ' damage!'
+              " damage!"
           );
           turnOrder[j].character.save();
         }
@@ -433,8 +436,8 @@ export class Battle {
     this.leadPlayer.remainingActions = POST_START_ACTIONS;
     this.turn++;
     this.embed.fields!.push({
-      name: 'Turn ' + this.turn,
-      value: '...Action phase...\n',
+      name: "Turn " + this.turn,
+      value: "**...Action phase...**\n",
     });
     await interaction.editReply({
       embeds: [this.embed],
@@ -445,7 +448,7 @@ export class Battle {
   //Adds a string to the current working field of the embed
   //Which field the string is added to depends on the turn.
   async updateEmbed(interaction: ButtonInteraction, updateStr: string) {
-    this.embed.fields![this.turn - 1].value += updateStr + '\n';
+    this.embed.fields![this.turn - 1].value += updateStr + "\n";
     await interaction.editReply({
       embeds: [this.embed],
     });
@@ -463,5 +466,23 @@ export class Battle {
     Buttons.splice(this.buttonsStartIndex, 8);
     this.leadPlayer.player.inDuel = false;
     this.oppPlayer.player.inDuel = false;
+  }
+
+  async duelImage(): Promise<MessageAttachment> {
+    const canvas = createCanvas(250, 150);
+    const context = canvas.getContext("2d");
+    const leadCharacterImg = await loadImage(this.leadPlayer.character.image);
+    const oppCharacterImg = await loadImage(this.leadPlayer.character.image);
+    context.drawImage(leadCharacterImg, 0, 0, 100, canvas.height);
+    context.drawImage(oppCharacterImg, 150, 0, 100, canvas.height);
+    context.strokeRect(0, 0, canvas.width, canvas.height);
+    context.font = "60px sans-serif";
+    context.fillStyle = "#000000";
+    context.fillText("VS.", canvas.width / 2 - 20, canvas.height / 2);
+    const attachment = new MessageAttachment(
+      canvas.toBuffer(),
+      "character-duel.png"
+    );
+    return attachment;
   }
 }
