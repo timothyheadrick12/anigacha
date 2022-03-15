@@ -42,6 +42,9 @@ export const Summon: Command = {
 
     //Should delete message after 14 minutes to avoid crashing due to
     //old interactions
-    setTimeout(() => interaction.deleteReply, 14 * 60 * 1000);
+    setTimeout(
+      () => interaction.editReply({content: 'Timed out...', components: []}),
+      14 * 60 * 1000
+    );
   },
 };
