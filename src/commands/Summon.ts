@@ -39,12 +39,5 @@ export const Summon: Command = {
         players.get(interaction.user.id)?.currency,
       components: [buttonRow],
     });
-
-    //Should delete message after 14 minutes to avoid crashing due to
-    //old interactions
-    setTimeout(
-      () => interaction.editReply({content: 'Timed out...', components: []}),
-      14 * 60 * 1000
-    );
   },
 };
