@@ -46,15 +46,13 @@ export const Inventory: Command = {
         var index = 0;
         //for each character, add it to the message and start
         //a new message when length cap is reached
+        //strikethrough character if dead
         characters?.forEach((character) => {
           if (messages[index].length < 1900)
             messages[index] +=
-              '[' +
-              character.id.toString() +
-              ']' +
-              character.name +
-              character.rarity +
-              '     ';
+              '[' + character.id.toString() + ']' + character.isAlive
+                ? character.name
+                : '~~' + character.name + '~~' + character.rarity + '     ';
           else {
             messages.push('');
             index++;

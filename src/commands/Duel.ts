@@ -52,6 +52,12 @@ export const Duel: OptionCommand = {
         content: 'You cannot duel two people at once!',
       });
     }
+    //primary Character is dead
+    else if (!players.get(interaction.user.id)!.primaryCharacter?.isAlive) {
+      await interaction.followUp({
+        content: 'You cannot duel with a dead character!',
+      });
+    }
     //Safe to use command
     else {
       const oppPlayer = interaction.options.getUser('player', true);
@@ -98,6 +104,12 @@ export const Duel: OptionCommand = {
           ' to a duel! Will they accept?',
         components: [buttonRow],
       });
+      //Should delete message after 14 minutes to avoid crashing due to
+      //old interactions
+      setTimeout(
+        () => interaction.editReply({content: 'Timed out...', components: []}),
+        14 * 60 * 1000
+      );
     }
   },
 };

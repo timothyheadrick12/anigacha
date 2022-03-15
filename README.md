@@ -6,8 +6,6 @@
 
 ## Todo
 
-- Fix old messages breaking bot
-- Implement death permanency
 - Implement levels
 - Add Bots
 - Add trashing characters

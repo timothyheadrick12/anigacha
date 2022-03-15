@@ -30,6 +30,11 @@ export const Heal: OptionCommand = {
             ephemeral: true,
             content: 'You cannot heal during a duel',
           });
+        } else if (!character.isAlive) {
+          await interaction.followUp({
+            ephemeral: true,
+            content: 'You cannot heal a dead character',
+          });
         } else if (players.get(interaction.user.id)!.currency < 100) {
           await interaction.followUp({
             ephemeral: true,

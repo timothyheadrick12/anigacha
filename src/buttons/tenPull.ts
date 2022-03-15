@@ -3,7 +3,7 @@
 import {ButtonInteraction, Client, MessageEmbed} from 'discord.js';
 import {Button} from '../typings/Button';
 import {players} from '../globals';
-import {createCharacter} from '../game_logic/characterLogic';
+import {createCharacter} from '../game_logic/characterCreationLogic';
 import {summon} from '../game_logic/summonLogic';
 import {ReqCharacterData} from 'src/typings/CharacterData';
 

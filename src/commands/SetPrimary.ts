@@ -24,16 +24,24 @@ export const SetPrimary: OptionCommand = {
         interaction.options.getInteger('id', true)
       );
       if (character?.owner_id == interaction.user.id) {
-        players.get(interaction.user.id)!.primaryCharacter = character;
-        players
-          .get(interaction.user.id)!
-          .setPrimaryCharacter(character)
-          .then(() => players.get(interaction.user.id)!.save());
-        await interaction.followUp({
-          ephemeral: true,
-          content:
-            'Set primary character to ' + character.name + character.rarity,
-        });
+        if (character.isAlive) {
+          players.get(interaction.user.id)!.primaryCharacter = character;
+          players
+            .get(interaction.user.id)!
+            .setPrimaryCharacter(character)
+            .then(() => players.get(interaction.user.id)!.save());
+          await interaction.followUp({
+            ephemeral: true,
+            content:
+              'Set primary character to ' + character.name + character.rarity,
+          });
+        } else {
+          await interaction.followUp({
+            ephemeral: true,
+            content:
+              'You cannot set your primary character to a dead character',
+          });
+        }
       } else {
         await interaction.followUp({
           ephemeral: true,

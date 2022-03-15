@@ -44,6 +44,10 @@ export const createModAcceptDuel = (
         ephemeral: true,
         content: 'Your challenger is in another duel. They must finish first!',
       });
+    } else if (!players.get(opponentStr)!.primaryCharacter?.isAlive) {
+      await interaction.followUp({
+        content: 'You cannot duel with a dead character!',
+      });
     }
     //If valid accept
     else {
