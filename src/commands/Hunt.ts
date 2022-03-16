@@ -17,7 +17,7 @@ export const Hunt: Command = {
   name: 'hunt',
   description: 'Search for bots to challenge',
   type: 'CHAT_INPUT',
-  ephemeral: false,
+  ephemeral: true,
   run: async (client: Client, interaction: CommandInteraction) => {
     //If new player
     if (!players.has(interaction.user.id)) {
