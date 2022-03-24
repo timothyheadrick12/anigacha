@@ -9,5 +9,6 @@ export interface ReqCharacterData {
   description: string;
   favourites: number;
   rarity: string;
-  image: string;
+  image_med: string;
+  image_large: string;
 }

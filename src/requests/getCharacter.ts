@@ -35,6 +35,7 @@ export default async () =>
                     }
                     image {
                       medium
+                      large
                     }
                     description
                   }
@@ -62,7 +63,8 @@ export default async () =>
       description: characterNode.description as string,
       favourites: characterNode.favourites as number,
       rarity: calculateRarity(characterNode.favourites),
-      image: characterNode.image.medium as string,
+      image_med: characterNode.image.medium as string,
+      image_large: characterNode.image.large as string,
     };
     return character;
   });

@@ -16,7 +16,7 @@ export const onePull: Button = {
         //Create message
         const characterEmbed = new MessageEmbed()
           .setTitle(characterData[0].name + ' from ' + characterData[0].anime)
-          .setImage(characterData[0].image)
+          .setImage(characterData[0].image_med)
           .addField('Rarity', characterData[0].rarity);
         await interaction.followUp({
           embeds: [characterEmbed],

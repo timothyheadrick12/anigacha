@@ -53,7 +53,7 @@ export const Stats: OptionCommand = {
             {name: 'HIT', value: character.hit.toString(), inline: true},
             {name: 'CRIT', value: character.crit.toString(), inline: true}
           )
-          .setImage(character.image);
+          .setImage(character.image_med);
         await interaction.followUp({
           ephemeral: true,
           embeds: [statEmbed],

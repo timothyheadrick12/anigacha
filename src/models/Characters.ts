@@ -7,7 +7,7 @@ import {
   Sequelize,
   InferCreationAttributes,
   CreationOptional,
-} from "sequelize";
+} from 'sequelize';
 export default class Character extends Model<
   InferAttributes<Character>,
   InferCreationAttributes<Character>
@@ -18,7 +18,8 @@ export default class Character extends Model<
   declare anime: string;
   declare owner_id: string | null;
   declare popularity: number;
-  declare image: string;
+  declare image_med: string;
+  declare image_large: string;
   declare rarity: string;
   declare stat_coef: number;
   declare power: number;
@@ -76,7 +77,11 @@ export const charactersInit = (sequelize: Sequelize) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      image: {
+      image_med: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      image_large: {
         type: DataTypes.STRING,
         allowNull: false,
       },
@@ -195,7 +200,7 @@ export const charactersInit = (sequelize: Sequelize) => {
     },
     {
       sequelize,
-      tableName: "characters",
+      tableName: 'characters',
     }
   );
 };

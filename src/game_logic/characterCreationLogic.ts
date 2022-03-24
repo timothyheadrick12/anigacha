@@ -2,11 +2,11 @@
 //that are associated with a player.
 //Important files: summonLogic.ts
 
-import Player from "../models/Players";
-import { popularityCut } from "../globals";
-import { randomInt } from "crypto";
-import Character from "../models/Characters";
-import { ReqCharacterData } from "../typings/CharacterData";
+import Player from '../models/Players';
+import {popularityCut} from '../globals';
+import {randomInt} from 'crypto';
+import Character from '../models/Characters';
+import {ReqCharacterData} from '../typings/CharacterData';
 
 //Max possible stat_coefficient for chaaracters
 export const MAX_STAT = 1000000000000000;
@@ -23,7 +23,8 @@ export const createCharacter = async (
     name: characterData.name,
     anime: characterData.anime,
     popularity: characterData.favourites,
-    image: characterData.image,
+    image_med: characterData.image_med,
+    image_large: characterData.image_large,
     rarity: characterData.rarity,
     stat_coef: stats.stat_coef,
     power: stats.power,

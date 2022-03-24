@@ -9,11 +9,15 @@
   "private": true,
   "dependencies": {
     "@types/bcrypt": "^5.0.0",
+    "@types/cors": "^2.8.12",
+    "@types/express": "^4.17.13",
     "axios": "^0.26.0",
     "bcrypt": "^5.0.1",
     "canvas": "^2.9.0",
+    "cors": "^2.8.5",
     "discord.js": "^13.6.0",
     "dotenv": "^16.0.0",
+    "express": "^4.17.3",
     "sequelize": "^6.17.0",
     "sqlite3": "^5.0.2"
   },
@@ -24,6 +28,7 @@
   },
   "scripts": {
     "start": "ts-node src/Bot.ts",
+    "start-app": "ts-node src/app.ts",
     "initdb": "ts-node src/dbInit.ts",
     "initdb-f": "ts-node src/dbInit.ts -f"
   }
