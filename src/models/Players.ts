@@ -24,12 +24,14 @@ import {
   NonAttribute,
 } from 'sequelize';
 import Character from './Characters';
+import bcrypt from 'bcrypt';
 export default class Player extends Model<
   InferAttributes<Player>,
   InferCreationAttributes<Player>
 > {
   declare id: string;
   declare name: string;
+  declare password: CreationOptional<string>;
   declare currency: CreationOptional<number>;
   declare fiveStarPity: CreationOptional<number>;
   declare fourStarPity: CreationOptional<number>;
@@ -54,6 +56,10 @@ export default class Player extends Model<
   declare setPrimaryCharacter: HasOneSetAssociationMixin<Character, 'id'>;
   declare createPrimaryCharacter: HasOneCreateAssociationMixin<Character>;
 
+  validPassword(password: string): NonAttribute<boolean> {
+    return bcrypt.compareSync(password, this.password);
+  }
+
   declare static associations: {
     characters: Association<Player, Character>;
   };
@@ -70,6 +76,10 @@ export const playersInit = (sequelize: Sequelize) => {
       name: {
         type: DataTypes.STRING,
         allowNull: false,
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: true,
       },
       currency: {
         type: DataTypes.INTEGER,
@@ -93,6 +103,20 @@ export const playersInit = (sequelize: Sequelize) => {
       },
     },
     {
+      hooks: {
+        beforeCreate: async (user) => {
+          if (user.password) {
+            const salt = await bcrypt.genSaltSync(10, 'a');
+            user.password = bcrypt.hashSync(user.password, salt);
+          }
+        },
+        beforeUpdate: async (user) => {
+          if (user.password) {
+            const salt = await bcrypt.genSaltSync(10, 'a');
+            user.password = bcrypt.hashSync(user.password, salt);
+          }
+        },
+      },
       sequelize,
       tableName: 'players',
     }

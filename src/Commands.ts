@@ -6,6 +6,7 @@ import {TopUp} from './commands/TopUp';
 import {SetPrimary} from './commands/SetPrimary';
 import {Duel} from './commands/Duel';
 import {Stats} from './commands/Stats';
+import {CreatePassword} from './commands/CreatePassword';
 
 //list of all commands to listen for
 export const Commands: Command[] = [
@@ -16,4 +17,5 @@ export const Commands: Command[] = [
   Duel,
   Heal,
   Stats,
+  CreatePassword,
 ];
